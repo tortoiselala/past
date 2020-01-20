@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tortoise.ac.dal.mapper.AccountMapper">
+
+    <sql id="BaseColumnList">
+        `uid`,`status`,`sex`,`create_time`,`update_time`, `logo`, `nick`
+    </sql>
+
+    <sql id="TableName">
+        `account`
+    </sql>
+    <insert id="insert">
+        insert into <include refid="TableName"/>
+        (<include refid="BaseColumnList"/>)
+        values
+        (${uid}, ${status}, ${sex}, ${createTime}, ${updateTime}, ${logo}, ${nick})
+    </insert>
+    <update id="update">
+        update <include refid="TableName"/>
+        set `update_time` = ${updateTime}
+        <if test="status != null">
+            , `status` = ${status}
+        </if>
+        <if test="sex != null">
+            , `sex` = ${sex}
+        </if>
+        <if test="logo != null">
+            , `logo` = ${logo}
+        </if>
+        <if test="nick != null">
+            , `nick` = ${nick}
+        </if>
+        where uid = ${uid}
+    </update>
+    <delete id="delete">
+        delete from <include refid="TableName"/>
+        where uid = ${uid}
+    </delete>
+    <select id="query" resultType="com.tortoise.ac.dal.dao.account.AccountDo">
+        select * from account
+        where
+        <include refid="QueryConditions"/>
+    </select>
+
+    <sql id="QueryConditions">
+        true
+        <if test="accountUidSet != null and accountUidSet.size() > 0">
+            and uid in
+            <foreach collection="accountUidSet" close=")" open="(" separator="," item="it">
+                #{it}
+            </foreach>
+        </if>
+        <if test="statusSet != null and statusSet.size() > 0">
+            and status in
+            <foreach collection="statusSet" close=")" open="(" separator="," item="it">
+                #{it}
+            </foreach>
+        </if>
+        <if test="sexSet != null and sexSet.size() > 0">
+            and sex in
+            <foreach collection="sexSet" close=")" open="(" separator="," item="it">
+                #{it}
+            </foreach>
+        </if>
+        <if test="logoSet != null and logoSet.size() > 0">
+            and logo in
+            <foreach collection="logoSet" close=")" open="(" separator="," item="it">
+                #{it}
+            </foreach>
+        </if>
+        <if test="nickSet != null and nickSet.size() > 0">
+            and logo in
+            <foreach collection="nickSet" close=")" open="(" separator="," item="it">
+                #{it}
+            </foreach>
+        </if>
+        <if test="limit != null and offset != null">
+            limit #{limit}, #{offset}
+        </if>
+    </sql>
+
+</mapper>
